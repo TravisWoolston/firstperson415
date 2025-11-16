@@ -8,6 +8,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "DecalProjectile.generated.h"
 
+class UNiagaraSystem;
 UCLASS()
 class FIRSTPERSON415_API ADecalProjectile : public AActor
 {
@@ -17,7 +18,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Sets default values for this actor's properties
 	ADecalProjectile();
 	// Collision component
@@ -66,9 +67,12 @@ public:
 
 	// Randomized color for both projectile and decal
 	FLinearColor RandomColor;
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* colorP;
 
 	// Handle collision with objects
-	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 private:
 	bool DecalSpawned = false;
 

@@ -4,7 +4,8 @@
 #include "CubeDMIMod.h"
 #include "firstperson415Character.h"
 #include "Kismet/KismetMathLibrary.h"
-
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 // Sets default values
 ACubeDMIMod::ACubeDMIMod()
 {
@@ -55,12 +56,35 @@ void ACubeDMIMod::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		float ranNumx = UKismetMathLibrary::RandomFloatInRange(0.0f, 1.0f);
 		float ranNumy = UKismetMathLibrary::RandomFloatInRange(0.0f, 1.0f);
 		float ranNumz = UKismetMathLibrary::RandomFloatInRange(0.0f, 1.0f);
+		FLinearColor LinearRandColor(ranNumx, ranNumy, ranNumz, 1.0f);
 		FVector4 randColor = FVector4(ranNumx, ranNumy, ranNumz, 1.0f);
 
 		if (dmiMat)
 		{
 			dmiMat->SetVectorParameterValue("Color", randColor);
 			dmiMat->SetScalarParameterValue("Darkness", ranNumx);
+			// Correct Niagara spawn: use full signature to satisfy overload
+			if (colorP && OtherComp)
+			{
+				UNiagaraComponent* particleComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+					colorP,                      // System template
+					OtherComp,                   // Attach to component
+					NAME_None,                   // Attach point name
+					FVector::ZeroVector,         // Location offset
+					FRotator::ZeroRotator,       // Rotation offset
+					EAttachLocation::KeepRelativeOffset,
+					true,                        // bAutoDestroy
+					true,                        // bAutoActivate
+					ENCPoolMethod::None,         // Pooling method
+					true                         // bPreCullCheck
+				);
+				if (particleComp)
+					{
+					// Set Niagara user parameters to match cube color (system must expose these parameters)
+					particleComp->SetNiagaraVariableLinearColor(TEXT("RandomColor"), LinearRandColor);
+					particleComp->SetNiagaraVariableLinearColor(TEXT("ParticleColor"), LinearRandColor);
+				}
+			}
 		}
 	}
 }
