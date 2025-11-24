@@ -19,7 +19,8 @@ public class firstperson415 : ModuleRules
             "GameplayStateTreeModule",
             "UMG",
             "Slate",
-            "Niagara"
+            "Niagara",
+            "ProceduralMeshComponent"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });

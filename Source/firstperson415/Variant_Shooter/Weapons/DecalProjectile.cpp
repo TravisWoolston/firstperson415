@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "PerlinProcTerrain.h"
 
 // Sets default values
 ADecalProjectile::ADecalProjectile()
@@ -137,6 +138,11 @@ void ADecalProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, U
 			if (ProjectileMaterialInstance)
 			{
 				ProjectileMaterialInstance->SetVectorParameterValue(FName("Color"), RandomColor);
+			}
+			APerlinProcTerrain* Terrain = Cast<APerlinProcTerrain>(OtherActor);
+			if (Terrain)
+			{
+				Terrain->AlterMesh(Hit.Location);
 			}
 		}
 
