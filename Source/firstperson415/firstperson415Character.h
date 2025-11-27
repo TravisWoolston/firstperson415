@@ -90,5 +90,9 @@ public:
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	/** Whether the character is currently teleporting (prevents infinite teleport loops) */
+	UPROPERTY(BlueprintReadWrite, Category="Portal")
+	bool IsTeleporting = false;
+
 };
 

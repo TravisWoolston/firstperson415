@@ -6,6 +6,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Portal.h"
 // Sets default values
 ACubeDMIMod::ACubeDMIMod()
 {
@@ -88,3 +89,4 @@ void ACubeDMIMod::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		}
 	}
 }
+
