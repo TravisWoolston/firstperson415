@@ -51,6 +51,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Portal Settings")
 	UMaterialInterface* Mat;
 
+	// Teleportation cooldown to prevent double-teleports
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Portal Settings")
+	float TeleportCooldown = 0.1f;
+
+	// Distance threshold for portal plane crossing (0 = at portal plane)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Portal Settings")
+	float CrossingThreshold = 0.0f;
+
 	// Portal Functions
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
@@ -61,4 +69,18 @@ public:
 
 	UFUNCTION()
 	void UpdatePortals();
+
+	// Teleport any actor through the portal
+	UFUNCTION(BlueprintCallable, Category = "Portal")
+	void TeleportActor(AActor* ActorToTeleport);
+
+	// Check if actor is crossing the portal plane
+	bool IsActorCrossingPortal(AActor* Actor, FVector& OutRelativePosition) const;
+
+private:
+	// Track actors that recently teleported
+	TMap<AActor*, float> TeleportedActors;
+	
+	// Clean up old teleport records
+	void CleanupTeleportRecords();
 };

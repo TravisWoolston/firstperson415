@@ -43,8 +43,47 @@ public:
 	UPROPERTY(EditAnywhere)
 	FVector Depth;
 
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	TSubclassOf<class APortal> PortalClass;
+
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	int32 NumPortalsToSpawn = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	UMaterialInterface* PortalMaterial;
+
+	// Template Render Targets (optional, overrides resolution setting if provided)
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	UTextureRenderTarget2D* RenderTargetTemplate;
+
+	// Template Materials for specific RT assignment if needed
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	UMaterialInterface* PortalMaterialTemplate;
+
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	FName PortalTextureParameterName = "RenderTargetParam";
+
+	// Capture Source: Use LDR (Final Color) to avoid exposure issues, or HDR (Scene Color) for high dynamic range
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	TEnumAsByte<ESceneCaptureSource> PortalCaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
+
+	UPROPERTY(EditAnywhere, Category = "Portals")
+	int32 PortalRenderTargetResolution = 256;
+
+	// Button to generate portals in the editor
+	UFUNCTION(CallInEditor, Category = "Portals")
+	void GeneratePortals();
+
+	// Button to clear portals in the editor
+	UFUNCTION(CallInEditor, Category = "Portals")
+	void ClearPortals();
 
 protected:
+	// Track spawned portals
+	UPROPERTY(VisibleAnywhere, Category = "Portals")
+	TArray<class APortal*> SpawnedPortals;
+
+	// Called when the game starts or when spawned
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -75,4 +114,7 @@ private:
 
 	void CreateVertices();
 	void CreateTriangles();
+	void GenerateMesh();
+	void SpawnPortals(); // Internal spawn logic
+	void ConfigurePortals();
 };
