@@ -142,7 +142,14 @@ void ADecalProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, U
 			APerlinProcTerrain* Terrain = Cast<APerlinProcTerrain>(OtherActor);
 			if (Terrain)
 			{
+				// Disable collision immediately to prevent recursive OnHit calls during mesh rebuild which causes Stack Overflow
+				if (CollisionComponent)
+				{
+					CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				}
+				
 				Terrain->AlterMesh(Hit.Location);
+				Destroy();
 			}
 		}
 

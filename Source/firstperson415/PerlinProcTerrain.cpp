@@ -227,10 +227,14 @@ void APerlinProcTerrain::AlterMesh(FVector impactPoint) {
 		}
 
 		// Update the mesh
-		ProcMesh->UpdateMeshSection(SectionID, Vertices, Normals, UV0, VertexColors, Tangents);
+		// Replace UpdateMeshSection with Clear + Create to ensure collision is definitely updated
+		// UpdateMeshSection sometimes fails to update the physics collision mesh properly
+		ProcMesh->ClearMeshSection(SectionID);
+		ProcMesh->CreateMeshSection(SectionID, Vertices, Triangles, Normals, UV0, VertexColors, Tangents, true);
 
 		// Recreate physics state to update collision after mesh deformation
-		ProcMesh->RecreatePhysicsState();
+		// (CreateMeshSection triggers it, but we enforce it here to be sure)
+		// ProcMesh->RecreatePhysicsState(); // Usually redundant after CreateMeshSection with bCreateCollision=true
 	}
 }
 
